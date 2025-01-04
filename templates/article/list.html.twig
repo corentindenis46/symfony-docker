@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des articles{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1>Liste des articles</h1>
+    <a href="{{ path('app_articles_create') }}" class="btn btn-success mb-3">Créer un nouvel article</a>
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">{{ message }}</div>
+    {% endfor %}
+
+    <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Image</th>
+                <th>Titre</th>
+                <th>Texte</th>
+                <th>Publié</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for article in articles %}
+                <tr>
+                    <td>{{ article.id }}</td>
+                    <td>
+                        {% if article.image %}
+                            <img src="{{ asset('uploads/' ~ article.image) }}" alt="{{ article.titre }}" class="img-thumbnail" style="max-width: 100px;">
+                        {% else %}
+                            <span class="text-muted">Pas d'image</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ article.titre }}</td>
+                    <td>{{ article.texte|length > 50 ? article.texte|slice(0, 50) ~ '...' : article.texte }}</td>
+                    <td>{{ article.publie ? 'Oui' : 'Non' }}</td>
+                    <td>
+                        <a href="{{ path('app_articles_edit', { id: article.id }) }}" class="btn btn-primary btn-sm">Modifier</a>
+                        <form method="post" action="{{ path('app_articles_delete', { id: article.id }) }}" style="display: inline-block;">
+                            <button class="btn btn-danger btn-sm" type="submit">Supprimer</button>
+                        </form>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="6" class="text-center">Aucun article trouvé.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
